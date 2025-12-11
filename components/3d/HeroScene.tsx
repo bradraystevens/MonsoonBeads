@@ -1,76 +1,73 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Float, MeshTransmissionMaterial, ContactShadows, Sparkles } from '@react-three/drei';
+import { Float, MeshTransmissionMaterial, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
-const HeroBead: React.FC = () => {
+const HeroScene: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
       const t = state.clock.getElapsedTime();
-      meshRef.current.rotation.x = Math.cos(t / 4) / 8 + 0.1;
-      meshRef.current.rotation.y = Math.sin(t / 4) / 8;
-      meshRef.current.rotation.z = (1 + Math.sin(t / 1.5)) / 20;
-      meshRef.current.position.y = (1 + Math.sin(t / 1.5)) / 10;
+      // Gentle, hypnotic rotation
+      meshRef.current.rotation.x = Math.sin(t / 4) / 4;
+      meshRef.current.rotation.y = Math.sin(t / 2) / 4;
     }
   });
 
   return (
     <group dispose={null}>
       <Float
-        speed={1.5} 
-        rotationIntensity={0.5} 
-        floatIntensity={0.5}
+        speed={2} 
+        rotationIntensity={0.2} 
+        floatIntensity={0.5} 
+        floatingRange={[-0.2, 0.2]}
       >
-        <mesh ref={meshRef} scale={1.8}>
+        <mesh ref={meshRef} scale={1.5}>
           <sphereGeometry args={[1, 64, 64]} />
-          {/* 
-            MeshTransmissionMaterial gives that premium glass/liquid look.
-            It simulates light passing through the object.
-          */}
           <MeshTransmissionMaterial
             backside
-            backsideThickness={5}
+            backsideThickness={1}
             thickness={2}
-            roughness={0.05}
+            roughness={0.1}
             transmission={1}
             ior={1.5}
-            chromaticAberration={0.06} // Subtle rainbow effect like wet glass
-            anisotropy={0.1}
-            distortion={0.1}
-            distortionScale={0.3}
-            temporalDistortion={0.5}
-            color="#eef2ff"
+            chromaticAberration={0.1}
+            anisotropy={0.2}
+            distortion={0.5}
+            distortionScale={0.5}
+            temporalDistortion={0.1}
+            color="#a78bfa" // Light violet tint
             bg="transparent"
           />
         </mesh>
       </Float>
       
-      {/* Soft Particles - Simulating Mist */}
+      {/* Atmospheric Particles - Rain/Mist feeling */}
       <Sparkles 
-        count={50} 
+        count={80} 
         scale={10} 
-        size={4} 
-        speed={0.4} 
-        opacity={0.4}
-        color="#CBD5E1"
-      />
-
-      <ContactShadows 
-        resolution={512} 
-        scale={10} 
-        blur={2} 
-        opacity={0.5} 
-        far={10} 
-        color="#94A3B8" 
+        size={3} 
+        speed={0.2} 
+        opacity={0.3}
+        color="#bae6fd"
       />
       
-      {/* Lighting for drama */}
-      <directionalLight position={[5, 5, 5]} intensity={2} color="#ffffff" />
-      <ambientLight intensity={0.5} color="#e0f2fe" />
+      {/* Background depth particles */}
+      <Sparkles 
+        count={40} 
+        scale={15} 
+        size={6} 
+        speed={0.1} 
+        opacity={0.1}
+        color="#8b5cf6"
+      />
+
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
     </group>
   );
 };
 
-export default HeroBead;
+export default HeroScene;

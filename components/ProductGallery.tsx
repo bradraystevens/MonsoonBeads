@@ -1,44 +1,63 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { Product } from '../types';
 
 const products: Product[] = [
   {
     id: 1,
     name: "Mist Drop",
-    price: "$145.00",
-    image: "https://picsum.photos/400/500?random=1",
+    price: 145.00,
+    images: ["https://picsum.photos/400/500?random=1"],
     tagline: "Pure Clarity",
-    color: "bg-slate-200"
+    color: "bg-slate-200",
+    category: "Necklaces",
+    description: "Pure Clarity necklace representing the morning mist.",
+    rating: 5
   },
   {
     id: 2,
     name: "Storm Grey",
-    price: "$165.00",
-    image: "https://picsum.photos/400/500?random=2",
+    price: 165.00,
+    images: ["https://picsum.photos/400/500?random=2"],
     tagline: "Deep Resonance",
-    color: "bg-slate-400"
+    color: "bg-slate-400",
+    category: "Bracelets",
+    description: "Storm grey beads reflecting the intensity of the monsoon.",
+    rating: 5
   },
   {
     id: 3,
     name: "Azure Pearl",
-    price: "$185.00",
-    image: "https://picsum.photos/400/500?random=3",
+    price: 185.00,
+    images: ["https://picsum.photos/400/500?random=3"],
     tagline: "Oceanic Calm",
-    color: "bg-sky-200"
+    color: "bg-sky-200",
+    category: "Earrings",
+    description: "Azure pearls captured in a moment of calm.",
+    rating: 5
   },
   {
     id: 4,
     name: "Rain Gold",
-    price: "$210.00",
-    image: "https://picsum.photos/400/500?random=4",
+    price: 210.00,
+    images: ["https://picsum.photos/400/500?random=4"],
     tagline: "Sunlight Through Rain",
-    color: "bg-amber-100"
+    color: "bg-amber-100",
+    category: "Necklaces",
+    description: "Gold accents shining through the rain.",
+    rating: 5
   }
 ];
 
-const ProductCard: React.FC<{ product: Product, index: number }> = ({ product, index }) => {
+interface ProductCardProps {
+  product: Product;
+  index: number;
+  onAdd: (product: Product) => void;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product, index, onAdd }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 50 }}
@@ -48,15 +67,24 @@ const ProductCard: React.FC<{ product: Product, index: number }> = ({ product, i
       className="group cursor-pointer"
     >
       <div className="relative overflow-hidden bg-monsoon-100 aspect-[3/4] mb-6">
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 ${product.color}`}></div>
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 ${product.color || ''}`}></div>
         <img 
-          src={product.image} 
+          src={product.images[0]} 
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 grayscale-[20%] group-hover:grayscale-0"
         />
         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 text-xs font-sans tracking-widest text-monsoon-900 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
           NEW ARRIVAL
         </div>
+        
+        {/* Quick Add Overlay */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); onAdd(product); }}
+          className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex justify-center items-center space-x-2 text-monsoon-900 hover:bg-monsoon-900 hover:text-white"
+        >
+          <ShoppingBag size={16} />
+          <span className="font-sans text-xs tracking-widest uppercase">Add to Cart</span>
+        </button>
       </div>
       
       <div className="flex justify-between items-start">
@@ -65,17 +93,18 @@ const ProductCard: React.FC<{ product: Product, index: number }> = ({ product, i
           <p className="font-sans text-xs text-monsoon-500 tracking-widest uppercase">{product.tagline}</p>
         </div>
         <div className="flex flex-col items-end">
-          <span className="font-sans text-sm font-medium text-monsoon-900 mb-2">{product.price}</span>
-          <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0 text-monsoon-400">
-            <ArrowRight size={16} />
-          </span>
+          <span className="font-sans text-sm font-medium text-monsoon-900 mb-2">${product.price.toFixed(2)}</span>
         </div>
       </div>
     </motion.div>
   );
 };
 
-const ProductGallery: React.FC = () => {
+interface ProductGalleryProps {
+  addToCart: (product: Product) => void;
+}
+
+const ProductGallery: React.FC<ProductGalleryProps> = ({ addToCart }) => {
   return (
     <section className="py-24 bg-white px-6 md:px-12" id="collections">
       <div className="container mx-auto">
@@ -100,7 +129,7 @@ const ProductGallery: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
           {products.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
+            <ProductCard key={product.id} product={product} index={index} onAdd={addToCart} />
           ))}
         </div>
         

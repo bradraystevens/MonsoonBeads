@@ -1,10 +1,18 @@
 export interface Product {
   id: number;
   name: string;
-  price: string;
-  image: string;
-  tagline: string;
-  color: string;
+  price: number;
+  images: string[];
+  category: string;
+  description: string;
+  rating: number;
+  isNew?: boolean;
+  tagline?: string;
+  color?: string;
+}
+
+export interface CartItem extends Product {
+  quantity: number;
 }
 
 export interface Review {
@@ -13,16 +21,17 @@ export interface Review {
   text: string;
   rating: number;
   location: string;
+  date: string;
 }
 
-export type BeadType = {
+export interface BeadType {
   id: string;
   x: number;
   y: number;
   z: number;
   color: string;
   scale: number;
-};
+}
 
 // Global declaration for React Three Fiber intrinsic elements
 declare global {

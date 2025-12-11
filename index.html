@@ -7,16 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              serif: ['"Cormorant Garamond"', 'serif'],
-              sans: ['"Montserrat"', 'sans-serif'],
+              serif: ['"Playfair Display"', 'serif'],
+              sans: ['"Inter"', 'sans-serif'],
             },
             colors: {
+              primary: '#0f172a', // slate-900
+              secondary: '#1e293b', // slate-800
+              accent: '#8b5cf6', // violet-500
+              gold: '#fbbf24', // amber-400
+              text: '#f8fafc', // slate-50
+              muted: '#64748b', // slate-500
               monsoon: {
                 50: '#F8FAFC',
                 100: '#F1F5F9',
@@ -29,22 +35,41 @@
                 800: '#1E293B',
                 900: '#0F172A',
               },
-              pearl: '#FDFCF8',
-              wet: '#E0F2FE',
             },
-            backgroundImage: {
-              'mist-gradient': 'linear-gradient(to bottom, #F8FAFC 0%, #E2E8F0 100%)',
+            cursor: {
+              none: 'none',
             }
           }
         }
       }
     </script>
     <style>
-      body { margin: 0; padding: 0; overflow-x: hidden; background-color: #F8FAFC; }
+      body { margin: 0; padding: 0; overflow-x: hidden; background-color: #0f172a; color: #f8fafc; }
       /* Hide scrollbar for cleaner look */
       ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+      ::-webkit-scrollbar-track { background: #0f172a; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+      
+      .custom-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.2s, height 0.2s, background-color 0.2s;
+        mix-blend-mode: difference;
+      }
+      .custom-cursor.hovered {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.8);
+      }
     </style>
   <script type="importmap">
 {
@@ -56,7 +81,8 @@
     "@react-three/fiber": "https://aistudiocdn.com/@react-three/fiber@^9.4.2",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
     "@react-three/drei": "https://aistudiocdn.com/@react-three/drei@^10.7.7",
-    "three": "https://aistudiocdn.com/three@^0.181.2"
+    "three": "https://aistudiocdn.com/three@^0.181.2",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0"
   }
 }
 </script>

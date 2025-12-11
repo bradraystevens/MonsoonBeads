@@ -1,136 +1,197 @@
-import React, { Suspense, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ShoppingBag, Menu, X, ArrowRight, Play, Droplets } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { Environment, Loader, Lightformer } from '@react-three/drei';
+import React, { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { Product, CartItem } from './types';
 
 // Components
-import HeroScene from './components/3d/HeroScene';
-import ProductGallery from './components/ProductGallery';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import ProductCatalog from './components/ProductCatalog';
 import InteractivePlayground from './components/InteractivePlayground';
 import AboutSection from './components/AboutSection';
+import WhyChooseUs from './components/WhyChooseUs';
 import ReviewsSection from './components/ReviewsSection';
+import InstagramFeed from './components/InstagramFeed';
 import Footer from './components/Footer';
+import CartDrawer from './components/CartDrawer';
+import QuickViewModal from './components/QuickViewModal';
+import AIChat from './components/AIChat';
 
-const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+// Dummy Data for Initialization
+export const products: Product[] = [
+  {
+    id: 1,
+    name: "Midnight Monsoon Drop",
+    price: 145,
+    category: "Necklaces",
+    rating: 5,
+    isNew: true,
+    description: "A single, perfect sphere capturing the essence of a midnight storm. Hand-polished to a mirror finish.",
+    images: ["https://picsum.photos/600/800?random=1", "https://picsum.photos/600/800?random=11"]
+  },
+  {
+    id: 2,
+    name: "Storm Grey Bracelet",
+    price: 165,
+    category: "Bracelets",
+    rating: 4.8,
+    description: "Resilient grey beads strung with silk, representing the calm before the rain.",
+    images: ["https://picsum.photos/600/800?random=2", "https://picsum.photos/600/800?random=12"]
+  },
+  {
+    id: 3,
+    name: "Azure Pearl Earrings",
+    price: 185,
+    category: "Earrings",
+    rating: 5,
+    isNew: true,
+    description: "Drops of azure captured in pearl, reflecting the sky after the clouds clear.",
+    images: ["https://picsum.photos/600/800?random=3", "https://picsum.photos/600/800?random=13"]
+  },
+  {
+    id: 4,
+    name: "Rain Gold Pendant",
+    price: 210,
+    category: "Necklaces",
+    rating: 4.9,
+    description: "A touch of sunlight breaking through the rain. 18k gold accents on deep blue glass.",
+    images: ["https://picsum.photos/600/800?random=4", "https://picsum.photos/600/800?random=14"]
+  },
+  {
+    id: 5,
+    name: "Mist Walker Ring",
+    price: 95,
+    category: "Rings",
+    rating: 4.7,
+    description: "Subtle, frosted glass texture that feels like morning mist on the skin.",
+    images: ["https://picsum.photos/600/800?random=5", "https://picsum.photos/600/800?random=15"]
+  },
+  {
+    id: 6,
+    name: "Thunderclap Choker",
+    price: 250,
+    category: "Necklaces",
+    rating: 5,
+    description: "Bold, dark, and striking. Statement piece for the modern artisan.",
+    images: ["https://picsum.photos/600/800?random=6", "https://picsum.photos/600/800?random=16"]
+  }
+];
+
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const onMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      
+      const target = e.target as HTMLElement;
+      setIsHovered(
+        target.tagName === 'BUTTON' || 
+        target.tagName === 'A' || 
+        target.closest('button') !== null ||
+        target.closest('a') !== null
+      );
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener('mousemove', onMouseMove);
+    return () => window.removeEventListener('mousemove', onMouseMove);
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <div className="text-2xl font-serif font-semibold tracking-widest text-monsoon-900 cursor-pointer">
-          MONSOON<span className="font-light italic text-monsoon-500">BEADS</span>
-        </div>
-        
-        <div className="hidden md:flex space-x-12 font-sans text-sm font-medium tracking-wide text-monsoon-700">
-          {['Collections', 'Atelier', 'Our Story', 'Journal'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="hover:text-monsoon-900 transition-colors relative group">
-              {item}
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-monsoon-900 transition-all group-hover:w-full duration-300"></span>
-            </a>
-          ))}
-        </div>
-
-        <div className="flex items-center space-x-6">
-          <button className="text-monsoon-800 hover:text-monsoon-600 transition-colors">
-            <ShoppingBag size={20} strokeWidth={1.5} />
-          </button>
-          <button className="md:hidden text-monsoon-800" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-    </nav>
+    <div 
+      className={`custom-cursor hidden md:block ${isHovered ? 'hovered' : ''}`}
+      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+    />
   );
 };
 
 const App: React.FC = () => {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.2], [0, 100]);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [wishlist, setWishlist] = useState<number[]>([]);
+
+  // Cart Functions
+  const addToCart = (product: Product, quantity: number = 1) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
+      }
+      return [...prev, { ...product, quantity }];
+    });
+    setIsCartOpen(true);
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id: number, delta: number) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        return { ...item, quantity: Math.max(1, item.quantity + delta) };
+      }
+      return item;
+    }));
+  };
+
+  // Wishlist Functions
+  const toggleWishlist = (id: number) => {
+    setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
 
   return (
-    <div className="bg-monsoon-50 text-monsoon-900 min-h-screen selection:bg-monsoon-200">
-      <Navbar />
+    <div className="bg-primary text-text min-h-screen selection:bg-accent selection:text-white font-sans">
+      <CustomCursor />
+      
+      <Navbar 
+        cartCount={cart.reduce((acc, item) => acc + item.quantity, 0)} 
+        onOpenCart={() => setIsCartOpen(true)} 
+      />
 
-      {/* HERO SECTION */}
-      <section className="relative h-screen w-full overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-            <Suspense fallback={null}>
-              {/* Procedural Environment to replace failing HDRI fetch */}
-              <Environment resolution={512}>
-                <group rotation={[-Math.PI / 2, 0, 0]}>
-                  <Lightformer intensity={2} rotation-x={Math.PI / 2} position={[0, 4, -9]} scale={[10, 10, 1]} />
-                  <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={[10, 2, 1]} />
-                  <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-5, -1, -1]} scale={[10, 2, 1]} />
-                  <Lightformer intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={[20, 2, 1]} />
-                </group>
-              </Environment>
-              <HeroScene />
-            </Suspense>
-          </Canvas>
-        </div>
+      <main>
+        <Hero />
         
-        <motion.div 
-          style={{ opacity, y }}
-          className="absolute inset-0 z-10 flex flex-col justify-center items-center pointer-events-none text-center px-4"
-        >
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-            className="font-serif text-5xl md:text-8xl text-monsoon-900 font-light mb-6 tracking-tight leading-tight"
-          >
-            Handcrafted <br/> <span className="italic text-monsoon-500">Luxury</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
-            className="font-sans text-monsoon-600 tracking-widest text-xs md:text-sm uppercase mb-12"
-          >
-            Inspired by the Monsoon Rain
-          </motion.p>
+        <ProductCatalog 
+          products={products}
+          onAddToCart={addToCart}
+          onQuickView={setQuickViewProduct}
+          wishlist={wishlist}
+          onToggleWishlist={toggleWishlist}
+        />
 
-          <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.8, delay: 1.4 }}
-             className="pointer-events-auto flex gap-6"
-          >
-            <button className="px-8 py-3 bg-monsoon-900 text-white font-sans text-sm tracking-widest hover:bg-monsoon-800 transition-all duration-500 ease-out shadow-lg shadow-monsoon-200/50">
-              SHOP COLLECTION
-            </button>
-            <button className="px-8 py-3 border border-monsoon-900/20 text-monsoon-900 font-sans text-sm tracking-widest hover:bg-white/50 backdrop-blur-sm transition-all duration-500 ease-out">
-              DISCOVER
-            </button>
-          </motion.div>
-        </motion.div>
+        <InteractivePlayground />
+        <AboutSection />
+        
+        <WhyChooseUs />
+        <ReviewsSection />
+        <InstagramFeed />
+      </main>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce text-monsoon-400">
-          <Droplets size={24} strokeWidth={1} />
-        </div>
-      </section>
-
-      {/* SECTIONS */}
-      <ProductGallery />
-      <InteractivePlayground />
-      <AboutSection />
-      <ReviewsSection />
       <Footer />
       
-      <Loader />
+      <AnimatePresence>
+        {isCartOpen && (
+          <CartDrawer 
+            isOpen={isCartOpen} 
+            onClose={() => setIsCartOpen(false)} 
+            cart={cart}
+            onRemove={removeFromCart}
+            onUpdateQuantity={updateQuantity}
+          />
+        )}
+        
+        {quickViewProduct && (
+          <QuickViewModal 
+            product={quickViewProduct} 
+            onClose={() => setQuickViewProduct(null)}
+            onAddToCart={addToCart}
+          />
+        )}
+      </AnimatePresence>
+
+      <AIChat />
     </div>
   );
 };

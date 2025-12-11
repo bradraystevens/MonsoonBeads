@@ -8,21 +8,24 @@ const reviews: Review[] = [
     author: "Elena R.",
     location: "Milan, Italy",
     text: "The way the light hits the Mist Drop bracelet is unreal. It truly feels like wearing a piece of the sky.",
-    rating: 5
+    rating: 5,
+    date: "Oct 2023"
   },
   {
     id: 2,
     author: "Sarah J.",
     location: "London, UK",
     text: "Minimalist perfection. The packaging, the weight of the beads, everything screams quiet luxury.",
-    rating: 5
+    rating: 5,
+    date: "Nov 2023"
   },
   {
     id: 3,
     author: "Yuki T.",
     location: "Kyoto, Japan",
     text: "I've never seen texture like this. Smooth yet organic. It matches my entire wardrobe.",
-    rating: 5
+    rating: 5,
+    date: "Dec 2023"
   }
 ];
 
@@ -52,6 +55,7 @@ const ReviewsSection: React.FC = () => {
               <div className="flex flex-col">
                 <span className="font-sans text-xs font-bold text-monsoon-900 uppercase tracking-widest">{review.author}</span>
                 <span className="font-sans text-[10px] text-monsoon-500 uppercase tracking-wide mt-1">{review.location}</span>
+                <span className="font-sans text-[10px] text-monsoon-400 uppercase tracking-wide mt-1">{review.date}</span>
               </div>
             </div>
           ))}

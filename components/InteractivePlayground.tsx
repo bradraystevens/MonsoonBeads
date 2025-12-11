@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, MeshTransmissionMaterial, Center, ContactShadows, Lightformer } from '@react-three/drei';
+import { Environment, MeshTransmissionMaterial, ContactShadows, Lightformer } from '@react-three/drei';
 import * as THREE from 'three';
 import { RefreshCcw, Plus } from 'lucide-react';
 import { BeadType } from '../types';
@@ -98,7 +99,7 @@ const SceneContent: React.FC<{ beads: BeadType[] }> = ({ beads }) => {
 
       <ContactShadows opacity={0.4} scale={10} blur={2} far={4} color="#64748B" />
       
-      {/* Procedural Environment instead of remote preset */}
+      {/* Procedural Environment: Ensure NO preset is loaded to fix "failed to fetch" errors */}
       <Environment resolution={256}>
         <group rotation={[-Math.PI / 2, 0, 0]}>
             <Lightformer intensity={2} rotation-x={Math.PI / 2} position={[0, 4, -6]} scale={[10, 10, 1]} />
