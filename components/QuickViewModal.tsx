@@ -1,6 +1,7 @@
-import React from 'react';
+
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { X, Star, ShoppingBag } from 'lucide-react';
+import { X, Star, ShoppingBag, ShieldCheck, Truck } from 'lucide-react';
 import { Product } from '../types';
 
 interface QuickViewModalProps {
@@ -10,71 +11,166 @@ interface QuickViewModalProps {
 }
 
 const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onAddToCart }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Ensure images array exists, fallback to single image if needed
+  const displayImages = product.images && product.images.length > 0 ? product.images : ["https://picsum.photos/600/800?blur"];
+
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center">
+      {/* Dark Backdrop */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#020617]/95 backdrop-blur-md"
       />
+      
+      {/* Content Container - Full Screen Feel */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="relative bg-secondary w-full max-w-4xl rounded-sm overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full h-full md:h-[95vh] md:w-[95vw] md:max-w-7xl md:rounded-lg overflow-hidden bg-primary shadow-2xl flex flex-col md:flex-row border border-white/5"
       >
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white transition-colors"
+          className="absolute top-6 right-6 z-20 p-3 bg-black/20 hover:bg-white hover:text-black rounded-full text-white transition-all duration-300 border border-white/10 backdrop-blur-md"
         >
           <X size={20} />
         </button>
 
-        {/* Image Gallery */}
-        <div className="w-full md:w-1/2 bg-gray-800 h-[300px] md:h-auto relative overflow-hidden group">
-          <img 
-            src={product.images[0]} 
-            alt={product.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
+        {/* Visual Experience (Gallery) */}
+        <div 
+          className="w-full md:w-[55%] h-[45vh] md:h-full relative bg-surface group flex flex-row md:flex-col overflow-x-auto md:overflow-x-hidden md:overflow-y-auto scrollbar-hide snap-x md:snap-none scroll-smooth"
+          ref={containerRef}
+        >
+          {displayImages.map((img, idx) => (
+            <div key={idx} className="min-w-full md:min-w-0 md:w-full h-full md:h-auto flex-shrink-0 relative snap-center">
+              <motion.img 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, margin: "0px 0px -20% 0px" }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                src={img} 
+                alt={`${product.name} - View ${idx + 1}`} 
+                className="w-full h-full md:h-auto object-cover"
+              />
+              
+              {/* Subtle gradient overlay on each image for text readability if needed */}
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-40 md:opacity-0" />
+            </div>
+          ))}
+
+          {/* Poetic Overlay - Fixed relative to the gallery container on Desktop, overlaid on Mobile */}
+          <div className="absolute bottom-6 left-6 right-6 z-10 pointer-events-none mix-blend-difference">
+             <p className="font-serif italic text-xl md:text-2xl text-white/90 leading-relaxed max-w-md drop-shadow-lg">
+               "{product.emotionalBenefit}"
+             </p>
+          </div>
+          
+          {/* Mobile Scroll Hint */}
+          {displayImages.length > 1 && (
+            <div className="absolute bottom-4 right-4 md:hidden z-10 bg-black/40 backdrop-blur px-3 py-1 rounded-full border border-white/10">
+              <span className="text-[9px] uppercase tracking-widest text-white">
+                Swipe
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Details */}
-        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col overflow-y-auto">
-          <div className="mb-6">
-            <span className="text-accent text-xs font-bold tracking-widest uppercase mb-2 block">{product.category}</span>
-            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">{product.name}</h2>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex text-gold">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} className={i < Math.floor(product.rating) ? "" : "opacity-30"} />
-                ))}
-              </div>
-              <span className="text-muted text-xs">(24 Reviews)</span>
+        {/* Narrative & Purchase (Right Panel) */}
+        <div className="w-full md:w-[45%] h-[55vh] md:h-full overflow-y-auto bg-primary relative flex flex-col border-l border-white/5">
+          <div className="p-8 md:p-16 flex flex-col min-h-full">
+            
+            {/* Header */}
+            <div className="mb-8">
+               <motion.span 
+                 initial={{ opacity: 0, x: -20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 transition={{ delay: 0.2 }}
+                 className="text-accent text-xs font-bold tracking-[0.25em] uppercase mb-4 block"
+               >
+                 Monsoon Collection — {product.category}
+               </motion.span>
+               
+               <motion.h2 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.3, duration: 0.8 }}
+                 className="font-serif text-3xl md:text-5xl text-white mb-2 leading-tight"
+               >
+                 {product.name}
+               </motion.h2>
+               
+               <motion.p 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 0.4 }}
+                 className="font-sans text-sm text-accent/60 italic mb-6"
+               >
+                 {product.poeticHeadline}
+               </motion.p>
+               
+               <div className="flex items-center gap-4 border-b border-white/5 pb-8">
+                 <p className="text-2xl md:text-3xl font-serif text-white">${product.price}</p>
+                 <div className="flex items-center gap-1 text-accent/80 text-xs">
+                    <Star size={12} fill="currentColor" />
+                    <span>5.0 (Archive Rated)</span>
+                 </div>
+               </div>
             </div>
-            <p className="text-2xl font-serif text-white">${product.price}</p>
-          </div>
 
-          <p className="text-gray-300 font-sans leading-relaxed mb-8 text-sm">
-            {product.description}
-          </p>
+            {/* Narrative */}
+            <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               transition={{ delay: 0.5 }}
+               className="mb-12"
+            >
+               <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-4">The Atmosphere</h3>
+               <p className="text-monsoon-200 font-sans leading-loose text-sm font-light">
+                 {product.description}
+               </p>
+            </motion.div>
 
-          <div className="mt-auto space-y-4">
-             <div className="flex gap-4">
-                <button 
+            {/* Trust Signals */}
+            <div className="grid grid-cols-2 gap-4 mb-12">
+               <div className="flex items-start gap-3 p-4 bg-white/5 rounded-sm border border-white/5">
+                 <ShieldCheck size={18} className="text-accent mt-0.5" />
+                 <div>
+                   <h4 className="text-white text-[10px] uppercase font-bold tracking-wider mb-1">Handcrafted</h4>
+                   <p className="text-monsoon-400 text-[10px]">Artisan finished in Pakistan</p>
+                 </div>
+               </div>
+               <div className="flex items-start gap-3 p-4 bg-white/5 rounded-sm border border-white/5">
+                 <Truck size={18} className="text-accent mt-0.5" />
+                 <div>
+                   <h4 className="text-white text-[10px] uppercase font-bold tracking-wider mb-1">Shipping</h4>
+                   <p className="text-monsoon-400 text-[10px]">Cash on Delivery Available</p>
+                 </div>
+               </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-auto pt-8 border-t border-white/5">
+               <button 
                   onClick={() => {
                     onAddToCart(product);
                     onClose();
                   }}
-                  className="flex-1 bg-white text-primary py-4 font-sans text-sm font-bold tracking-widest uppercase hover:bg-accent hover:text-white transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-white text-primary py-5 font-sans text-xs font-bold tracking-[0.2em] uppercase hover:bg-accent hover:text-primary transition-all duration-500 flex items-center justify-center gap-3 group shadow-lg shadow-white/5"
                 >
-                  <ShoppingBag size={18} />
-                  Add to Cart
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">Add to Collection</span>
+                  <ShoppingBag size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
-             </div>
-             <p className="text-center text-xs text-muted">Free shipping on orders over $200</p>
+                <p className="text-center text-[10px] text-monsoon-500 mt-4 tracking-wide">
+                  Limited edition. Crafted in small batches.
+                </p>
+            </div>
+            
           </div>
         </div>
       </motion.div>

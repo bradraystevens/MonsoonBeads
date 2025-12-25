@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -17,58 +18,138 @@
               sans: ['"Inter"', 'sans-serif'],
             },
             colors: {
-              primary: '#0f172a', // slate-900
-              secondary: '#1e293b', // slate-800
-              accent: '#8b5cf6', // violet-500
-              gold: '#fbbf24', // amber-400
-              text: '#f8fafc', // slate-50
-              muted: '#64748b', // slate-500
+              primary: '#020617', // Deep Abyss
+              secondary: '#0B1121', // Darker Secondary
+              surface: '#151e32', // Deep Wet Stone
+              accent: '#cbd5e1', // Moonlight Silver
+              highlight: '#7dd3fc', // Rain Reflection
+              text: '#f1f5f9', // Soft Pearl White
+              muted: '#64748b', // Deep Fog Gray
               monsoon: {
-                50: '#F8FAFC',
-                100: '#F1F5F9',
-                200: '#E2E8F0',
-                300: '#CBD5E1',
-                400: '#94A3B8',
-                500: '#64748B',
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                300: '#cbd5e1',
+                400: '#94a3b8',
+                500: '#64748b',
                 600: '#475569',
                 700: '#334155',
-                800: '#1E293B',
-                900: '#0F172A',
+                800: '#1e293b',
+                900: '#0f172a',
+                950: '#020617',
               },
             },
             cursor: {
               none: 'none',
+            },
+            backgroundImage: {
+              'luxury-gradient': 'linear-gradient(to bottom, rgba(255,255,255,0.03), transparent)',
+              'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01))',
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             }
           }
         }
       }
     </script>
     <style>
-      body { margin: 0; padding: 0; overflow-x: hidden; background-color: #0f172a; color: #f8fafc; }
-      /* Hide scrollbar for cleaner look */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #0f172a; }
-      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+      body { 
+        margin: 0; 
+        padding: 0; 
+        overflow-x: hidden; 
+        background-color: #020617; 
+        color: #f1f5f9;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Luxury Scrollbar */
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: #020617; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+      ::selection {
+        background: rgba(125, 211, 252, 0.2); /* Rain Blue Selection */
+        color: white;
+      }
       
       .custom-cursor {
         position: fixed;
         top: 0;
         left: 0;
-        width: 20px;
-        height: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        width: 12px;
+        height: 12px;
+        background-color: white;
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
         transform: translate(-50%, -50%);
-        transition: width 0.2s, height 0.2s, background-color 0.2s;
-        mix-blend-mode: difference;
+        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+        mix-blend-mode: exclusion;
       }
       .custom-cursor.hovered {
-        width: 50px;
-        height: 50px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.8);
+        width: 48px;
+        height: 48px;
+        background-color: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(2px);
+      }
+
+      .orb-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Liquid Button Effect */
+      .btn-luxury {
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      
+      .btn-luxury::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .btn-luxury:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.05) inset;
+      }
+
+      .btn-luxury:hover::before {
+        opacity: 1;
+      }
+
+      /* Text Reveal Utility */
+      .reveal-text {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      }
+      
+      /* Glass Card */
+      .glass-card {
+        background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.05);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       }
     </style>
   <script type="importmap">
@@ -82,7 +163,8 @@
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
     "@react-three/drei": "https://aistudiocdn.com/@react-three/drei@^10.7.7",
     "three": "https://aistudiocdn.com/three@^0.181.2",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0"
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
+    "ogl": "https://esm.sh/ogl@1.0.11"
   }
 }
 </script>

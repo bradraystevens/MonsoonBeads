@@ -1,65 +1,120 @@
-import React from 'react';
-import { Star } from 'lucide-react';
-import { Review } from '../types';
 
-const reviews: Review[] = [
+import React from 'react';
+import { motion } from 'framer-motion';
+import { MapPin } from 'lucide-react';
+
+const testimonials = [
   {
     id: 1,
-    author: "Elena R.",
-    location: "Milan, Italy",
-    text: "The way the light hits the Mist Drop bracelet is unreal. It truly feels like wearing a piece of the sky.",
-    rating: 5,
-    date: "Oct 2023"
+    text: "It feels heavier than I expected. The silence of the design speaks volumes.",
+    author: "Zara K.",
+    city: "Lahore",
+    meta: "Verified Buyer"
   },
   {
     id: 2,
-    author: "Sarah J.",
-    location: "London, UK",
-    text: "Minimalist perfection. The packaging, the weight of the beads, everything screams quiet luxury.",
-    rating: 5,
-    date: "Nov 2023"
+    text: "Barish ke baad ki khamoshi... this necklace captures exactly that feeling.",
+    author: "Omar A.",
+    city: "Islamabad",
+    meta: "Verified Buyer"
   },
   {
     id: 3,
-    author: "Yuki T.",
-    location: "Kyoto, Japan",
-    text: "I've never seen texture like this. Smooth yet organic. It matches my entire wardrobe.",
-    rating: 5,
-    date: "Dec 2023"
+    text: "Wore it to a wedding in Clifton. Subtle, yet everyone asked about it.",
+    author: "Ayesha R.",
+    city: "Karachi",
+    meta: "Verified Buyer"
   }
 ];
 
+const locations = ["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Faisalabad", "Multan"];
+
 const ReviewsSection: React.FC = () => {
   return (
-    <section className="py-24 bg-mist-gradient relative" id="journal">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="font-serif text-3xl md:text-4xl text-monsoon-800 mb-4">Voices of the Monsoon</h2>
-          <div className="w-12 h-px bg-monsoon-400 mx-auto"></div>
+    <section className="py-32 bg-secondary border-t border-white/5 relative overflow-hidden" id="journal">
+      {/* Background Mist */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/50 via-primary to-primary pointer-events-none opacity-50"></div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-24">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="block text-accent font-sans text-[10px] tracking-[0.3em] uppercase mb-4"
+          >
+            Trust & Heritage
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="font-serif text-3xl md:text-5xl text-white mb-6"
+          >
+            Loved Across Pakistan
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="font-serif italic text-muted text-lg"
+          >
+            "Barish ke baad ki khamoshi."
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {reviews.map((review) => (
-            <div 
-              key={review.id}
-              className="bg-white/40 backdrop-blur-md border border-white/60 p-8 rounded-sm hover:shadow-xl hover:shadow-monsoon-200/50 transition-all duration-500 group"
+        {/* Testimonial Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          {testimonials.map((item, idx) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="group relative p-8 glass-card rounded-sm hover:bg-white/5 transition-colors duration-700"
             >
-              <div className="flex space-x-1 text-monsoon-400 mb-6 group-hover:text-yellow-500 transition-colors">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} size={14} fill="currentColor" />
-                ))}
-              </div>
-              <p className="font-serif text-xl text-monsoon-800 italic mb-6 leading-relaxed">
-                "{review.text}"
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50"></div>
+              
+              <p className="font-serif text-lg text-slate-200 leading-relaxed mb-8 opacity-90 group-hover:opacity-100 transition-opacity">
+                "{item.text}"
               </p>
-              <div className="flex flex-col">
-                <span className="font-sans text-xs font-bold text-monsoon-900 uppercase tracking-widest">{review.author}</span>
-                <span className="font-sans text-[10px] text-monsoon-500 uppercase tracking-wide mt-1">{review.location}</span>
-                <span className="font-sans text-[10px] text-monsoon-400 uppercase tracking-wide mt-1">{review.date}</span>
+              
+              <div className="flex justify-between items-end border-t border-white/5 pt-6">
+                <div>
+                  <h4 className="font-sans text-xs font-bold text-white uppercase tracking-widest mb-1">{item.author}</h4>
+                  <div className="flex items-center gap-1 text-muted text-[10px] uppercase tracking-wide">
+                    <MapPin size={10} />
+                    {item.city}
+                  </div>
+                </div>
+                <span className="text-[9px] text-accent/60 uppercase tracking-widest border border-white/10 px-2 py-1 rounded-full">
+                  {item.meta}
+                </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* City Presence Strip */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5 }}
+          className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-muted/40 font-serif text-xl md:text-2xl"
+        >
+          {locations.map((city, i) => (
+            <React.Fragment key={city}>
+              <span className="hover:text-muted/80 transition-colors duration-500 cursor-default">{city}</span>
+              {i < locations.length - 1 && <span className="text-[10px] opacity-20">•</span>}
+            </React.Fragment>
+          ))}
+        </motion.div>
+
       </div>
     </section>
   );

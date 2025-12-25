@@ -14,7 +14,9 @@ const products: Product[] = [
     color: "bg-slate-200",
     category: "Necklaces",
     description: "Pure Clarity necklace representing the morning mist.",
-    rating: 5
+    rating: 5,
+    poeticHeadline: "A single droplet of morning silence.",
+    emotionalBenefit: "The clarity of a new day."
   },
   {
     id: 2,
@@ -25,7 +27,9 @@ const products: Product[] = [
     color: "bg-slate-400",
     category: "Bracelets",
     description: "Storm grey beads reflecting the intensity of the monsoon.",
-    rating: 5
+    rating: 5,
+    poeticHeadline: "Thunder trapped in glass.",
+    emotionalBenefit: "Strength amidst the chaos."
   },
   {
     id: 3,
@@ -36,7 +40,9 @@ const products: Product[] = [
     color: "bg-sky-200",
     category: "Earrings",
     description: "Azure pearls captured in a moment of calm.",
-    rating: 5
+    rating: 5,
+    poeticHeadline: "The ocean's quiet whisper.",
+    emotionalBenefit: "Deep calm in a restless world."
   },
   {
     id: 4,
@@ -47,7 +53,9 @@ const products: Product[] = [
     color: "bg-amber-100",
     category: "Necklaces",
     description: "Gold accents shining through the rain.",
-    rating: 5
+    rating: 5,
+    poeticHeadline: "Sunlight breaking the storm.",
+    emotionalBenefit: "Hope returning after the rain."
   }
 ];
 

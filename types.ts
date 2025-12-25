@@ -1,10 +1,13 @@
+
 export interface Product {
   id: number;
   name: string;
   price: number;
   images: string[];
-  category: string;
-  description: string;
+  category: string; // Will default to "Bracelets"
+  description: string; // Main emotional description
+  poeticHeadline: string; // New: 1-line poetic intro
+  emotionalBenefit: string; // New: "Feels like..."
   rating: number;
   isNew?: boolean;
   tagline?: string;

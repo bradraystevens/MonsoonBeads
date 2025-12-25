@@ -16,51 +16,38 @@ interface InteractiveBeadProps {
 const InteractiveBead: React.FC<InteractiveBeadProps> = ({ position, color }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // Physics state stored in refs to avoid re-renders
   const physicsRef = useRef({
     velocity: 0,
-    y: position[1] + 5, // Start higher to drop
+    y: position[1] + 5,
     isResting: false,
     bounceCount: 0
   });
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
-    
-    // Safety check to prevent NaN propagation
     const dt = Math.min(delta, 0.1); 
-
     const physics = physicsRef.current;
     
-    // Only simulate if not fully resting
     if (!physics.isResting) {
         const gravity = 9.8;
         const bounceFactor = 0.5;
-        const floorY = position[1]; // The target resting Y position
+        const floorY = position[1];
 
-        // Apply Gravity
         physics.velocity -= gravity * dt;
         physics.y += physics.velocity * dt;
 
-        // Floor Collision / Bounce Logic
         if (physics.y <= floorY) {
             physics.y = floorY;
-            
-            // Bounce
             if (Math.abs(physics.velocity) > 0.5) {
                 physics.velocity = -physics.velocity * bounceFactor;
                 physics.bounceCount++;
             } else {
-                // Stop bouncing
                 physics.velocity = 0;
                 physics.isResting = true;
             }
         }
 
-        // Update Mesh Position
         meshRef.current.position.y = physics.y;
-        
-        // Slight rotation based on velocity
         meshRef.current.rotation.x += physics.velocity * 0.05;
         meshRef.current.rotation.z += physics.velocity * 0.02;
     }
@@ -98,8 +85,6 @@ const SceneContent: React.FC<{ beads: BeadType[] }> = ({ beads }) => {
       ))}
 
       <ContactShadows opacity={0.4} scale={10} blur={2} far={4} color="#64748B" />
-      
-      {/* Procedural Environment: Ensure NO preset is loaded to fix "failed to fetch" errors */}
       <Environment resolution={256}>
         <group rotation={[-Math.PI / 2, 0, 0]}>
             <Lightformer intensity={2} rotation-x={Math.PI / 2} position={[0, 4, -6]} scale={[10, 10, 1]} />
@@ -107,7 +92,6 @@ const SceneContent: React.FC<{ beads: BeadType[] }> = ({ beads }) => {
             <Lightformer intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={[20, 2, 1]} />
         </group>
       </Environment>
-      
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
     </group>
@@ -118,49 +102,54 @@ const InteractivePlayground: React.FC = () => {
   const [beads, setBeads] = useState<BeadType[]>([]);
 
   const addBead = () => {
-    if (beads.length > 15) return; // Limit beads for performance
-    
+    if (beads.length > 15) return;
     const x = (Math.random() - 0.5) * 6;
     const z = (Math.random() - 0.5) * 2;
     const id = Math.random().toString(36).substr(2, 9);
     const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    
-    // y position is the target floor y
     setBeads(prev => [...prev, { id, x, y: -1, z, color, scale: 1 }]);
   };
 
   const reset = () => setBeads([]);
 
   return (
-    <section className="h-[80vh] bg-monsoon-50 relative overflow-hidden" id="atelier">
-      <div className="absolute top-8 left-0 w-full text-center pointer-events-none z-10 px-4">
-        <h3 className="font-serif text-3xl text-monsoon-900 mb-2">The Atelier</h3>
-        <p className="font-sans text-xs text-monsoon-500 tracking-widest mb-4">DESIGN YOUR RAIN</p>
-        <p className="font-sans text-[10px] text-monsoon-400">Tap 'Add Drop' to create unique beads</p>
-      </div>
+    <section className="py-24" id="atelier">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="relative w-full h-[600px] rounded-sm overflow-hidden border border-white/10 bg-[#1e293b]/50">
+          
+          {/* UI Overlay */}
+          <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start z-10 pointer-events-none">
+            <div>
+              <h3 className="font-serif text-2xl text-white mb-1">The Atelier</h3>
+              <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-slate-400">Interactive Lab v1.0</p>
+            </div>
+            <div className="pointer-events-auto flex gap-4">
+               <button 
+                  onClick={reset} 
+                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-white transition-all"
+               >
+                 <RefreshCcw size={16} />
+               </button>
+            </div>
+          </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-4">
-        <button 
-          onClick={addBead}
-          className="flex items-center gap-2 px-6 py-3 bg-monsoon-900 text-white rounded-full font-sans text-xs tracking-widest hover:bg-monsoon-800 transition-all shadow-lg hover:scale-105 active:scale-95"
-        >
-          <Plus size={16} />
-          ADD DROP
-        </button>
-        <button 
-          onClick={reset}
-          className="p-3 bg-white text-monsoon-900 rounded-full hover:bg-monsoon-100 transition-all shadow-md hover:rotate-180 duration-500"
-          aria-label="Reset"
-        >
-          <RefreshCcw size={16} />
-        </button>
-      </div>
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-auto">
+            <button 
+              onClick={addBead}
+              className="group flex items-center gap-3 px-8 py-4 bg-white text-black font-sans text-xs font-bold tracking-widest uppercase hover:bg-accent hover:text-white transition-colors duration-500"
+            >
+              <Plus size={16} className="group-hover:rotate-90 transition-transform duration-500" />
+              Add Droplet
+            </button>
+          </div>
 
-      <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 8], fov: 45 }}>
-        <Suspense fallback={null}>
-          <SceneContent beads={beads} />
-        </Suspense>
-      </Canvas>
+          <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 8], fov: 45 }}>
+            <Suspense fallback={null}>
+              <SceneContent beads={beads} />
+            </Suspense>
+          </Canvas>
+        </div>
+      </div>
     </section>
   );
 };

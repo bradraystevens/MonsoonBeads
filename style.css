@@ -1,0 +1,24 @@
+/*
+Theme Name: Monsoon Beads Luxury Atelier
+Theme URI: https://monsoonbeads.com/
+Author: Senior Frontend Team
+Description: Ultra-premium, interactive 3D handcrafted jewelry brand website.
+Version: 1.0.0
+Text Domain: monsoonbeads
+*/
+
+/* WordPress core resets for the React container */
+#root {
+  min-height: 100vh;
+}
+
+/* Ensure the WP Admin Bar doesn't break fixed layouts */
+.admin-bar .fixed-nav {
+  top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+  .admin-bar .fixed-nav {
+    top: 46px;
+  }
+}

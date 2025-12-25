@@ -1,85 +1,122 @@
+
 import React, { Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, Lightformer } from '@react-three/drei';
 import HeroScene from './3d/HeroScene';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigate: (view: 'home' | 'collections') => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  
+  // Parallax effects - slowed down for calming effect
+  const textY = useTransform(scrollY, [0, 500], [0, 150]);
+  const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const bgY = useTransform(scrollY, [0, 500], [0, 50]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+    <section className="relative h-[110vh] w-full overflow-hidden flex flex-col justify-center items-center bg-primary">
       {/* Background - 3D Scene */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary via-primary/90 to-primary">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
+      <motion.div 
+        style={{ y: bgY }}
+        className="absolute inset-0 z-0 opacity-80"
+      >
+        <Canvas camera={{ position: [0, 0, 6], fov: 35 }} dpr={[1, 1.5]}>
           <Suspense fallback={null}>
-             {/* Procedural Lighting */}
              <Environment resolution={512}>
                 <group rotation={[-Math.PI / 2, 0, 0]}>
-                  <Lightformer intensity={4} rotation-x={Math.PI / 2} position={[0, 4, -9]} scale={[10, 10, 1]} color="#8b5cf6" />
-                  <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={[10, 2, 1]} color="#fbbf24" />
-                  <Lightformer intensity={2} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={[20, 2, 1]} color="#bae6fd" />
+                  {/* Cooler lighting for moonlight feel */}
+                  <Lightformer intensity={1.5} rotation-x={Math.PI / 2} position={[0, 4, -9]} scale={[10, 10, 1]} color="#f1f5f9" />
+                  <Lightformer intensity={0.8} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={[10, 2, 1]} color="#bae6fd" />
+                  <Lightformer intensity={0.3} rotation-y={-Math.PI / 2} position={[10, 1, 0]} scale={[20, 2, 1]} color="#94a3b8" />
                 </group>
               </Environment>
             <HeroScene />
           </Suspense>
         </Canvas>
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent opacity-90"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent/10 via-transparent to-transparent opacity-50"></div>
-      </div>
+        {/* Cinematic Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/40 via-transparent to-primary"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_var(--tw-colors-primary)_120%)]"></div>
+      </motion.div>
 
-      {/* Content */}
+      {/* Editorial Content */}
       <motion.div 
-        style={{ y: y1, opacity }}
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
+        style={{ y: textY, opacity: textOpacity }}
+        className="relative z-10 container mx-auto px-6 text-center flex flex-col items-center"
       >
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="font-sans text-accent tracking-[0.3em] text-xs md:text-sm uppercase mb-6"
-        >
-          Inspired by the Monsoon Rain
-        </motion.p>
+        <div className="overflow-hidden mb-8">
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          >
+             <span className="font-sans text-accent/80 tracking-[0.5em] text-[10px] font-medium uppercase border border-white/10 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm">
+               Est. 2024 — The Archive
+             </span>
+          </motion.div>
+        </div>
         
-        <motion.h1 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-tight mb-8"
+        <h1 className="font-serif text-6xl md:text-8xl lg:text-9xl text-white leading-[0.9] tracking-tight mb-8 drop-shadow-2xl">
+          <motion.span 
+            initial={{ opacity: 0, y: 60, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+            className="block"
+          >
+            MONSOON
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0, y: 60, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+            className="block italic font-light text-white/60"
+          >
+            BEADS
+          </motion.span>
+        </h1>
+
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5, delay: 1 }}
+          className="font-sans text-accent/60 max-w-md mx-auto leading-relaxed text-sm md:text-base mb-12 tracking-wide font-light"
         >
-          Handcrafted <br/> 
-          <span className="italic font-light bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">Luxury</span>
-        </motion.h1>
+          Wearable atmosphere sculpted from glass and light. 
+          <br className="hidden md:block"/>
+          A collection defined by the silence of rain.
+        </motion.p>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col md:flex-row gap-6 justify-center items-center"
+          transition={{ duration: 1.2, delay: 1.2, ease: "easeOut" }}
         >
-          <button className="group relative px-8 py-4 bg-white/5 backdrop-blur-md border border-white/20 text-white font-sans text-sm tracking-widest uppercase overflow-hidden transition-all hover:bg-white/10 hover:border-accent hover:scale-105">
-            <span className="relative z-10 flex items-center gap-3">
-              Shop Collection 
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          <button 
+            onClick={() => onNavigate('collections')}
+            className="btn-luxury group px-12 py-5 rounded-sm"
+          >
+            <span className="relative z-10 flex items-center gap-4 font-sans text-[11px] font-bold tracking-[0.25em] uppercase text-white group-hover:text-highlight transition-colors">
+              Enter The Store
+              <ArrowRight size={14} className="text-white/50 group-hover:text-highlight transition-all duration-500 group-hover:translate-x-1" />
             </span>
-            <div className="absolute inset-0 bg-accent/20 transform -translate-x-full transition-transform duration-500 group-hover:translate-x-0"></div>
           </button>
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Hint */}
       <motion.div 
-        animate={{ y: [0, 10, 0] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 1.5 }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/20"
       >
-        <ChevronDown size={24} />
+        <span className="text-[9px] uppercase tracking-[0.2em]">Scroll</span>
+        <div className="w-[1px] h-16 bg-gradient-to-b from-white/0 via-white/20 to-white/0"></div>
       </motion.div>
     </section>
   );

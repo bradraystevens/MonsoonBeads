@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Float, MeshTransmissionMaterial, Sparkles } from '@react-three/drei';
@@ -18,10 +19,10 @@ const HeroScene: React.FC = () => {
   return (
     <group dispose={null}>
       <Float
-        speed={2} 
-        rotationIntensity={0.2} 
-        floatIntensity={0.5} 
-        floatingRange={[-0.2, 0.2]}
+        speed={1.5} 
+        rotationIntensity={0.1} 
+        floatIntensity={0.4} 
+        floatingRange={[-0.1, 0.1]}
       >
         <mesh ref={meshRef} scale={1.5}>
           <sphereGeometry args={[1, 64, 64]} />
@@ -29,15 +30,15 @@ const HeroScene: React.FC = () => {
             backside
             backsideThickness={1}
             thickness={2}
-            roughness={0.1}
+            roughness={0.05}
             transmission={1}
-            ior={1.5}
-            chromaticAberration={0.1}
-            anisotropy={0.2}
-            distortion={0.5}
-            distortionScale={0.5}
+            ior={1.45} // Slightly lower IOR for water/glass feel
+            chromaticAberration={0.06} // Reduced for elegance
+            anisotropy={0.1}
+            distortion={0.3}
+            distortionScale={0.3}
             temporalDistortion={0.1}
-            color="#a78bfa" // Light violet tint
+            color="#e2e8f0" // Silver/Pearl tint
             bg="transparent"
           />
         </mesh>
@@ -45,27 +46,27 @@ const HeroScene: React.FC = () => {
       
       {/* Atmospheric Particles - Rain/Mist feeling */}
       <Sparkles 
-        count={80} 
+        count={60} 
         scale={10} 
-        size={3} 
-        speed={0.2} 
-        opacity={0.3}
-        color="#bae6fd"
+        size={2} 
+        speed={0.1} 
+        opacity={0.4}
+        color="#bae6fd" // Pale blue
       />
       
       {/* Background depth particles */}
       <Sparkles 
-        count={40} 
+        count={30} 
         scale={15} 
-        size={6} 
-        speed={0.1} 
+        size={4} 
+        speed={0.05} 
         opacity={0.1}
-        color="#8b5cf6"
+        color="#ffffff"
       />
 
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
+      <ambientLight intensity={0.2} />
+      <directionalLight position={[10, 10, 5]} intensity={1.5} color="#e0f2fe" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#94a3b8" />
     </group>
   );
 };

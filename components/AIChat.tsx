@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SYSTEM_INSTRUCTION = `
-You are the "MonsoonBeads Atelier Assistant", an expert jewelry consultant for a luxury brand inspired by the monsoon rain. 
+You are the "MonsoonBeads Brand Assistant", an expert jewelry consultant for a luxury brand inspired by the monsoon rain. 
 Your tone is elegant, calm, sophisticated, and helpful. 
 The brand aesthetic is "wet-glass", "monsoon mist", and "handcrafted luxury".
 
@@ -27,7 +27,7 @@ const AIChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: "Welcome to the Atelier. I can assist you in finding the perfect piece of rain-inspired luxury. How may I help you today?" }
+    { role: 'model', text: "Welcome to MonsoonBeads. I can assist you in finding the perfect piece of rain-inspired luxury. How may I help you today?" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ const AIChat: React.FC = () => {
             <div className="bg-monsoon-900 p-4 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Sparkles size={16} className="text-monsoon-200" />
-                <span className="text-white font-serif tracking-wide">Atelier Assistant</span>
+                <span className="text-white font-serif tracking-wide">Brand Assistant</span>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-monsoon-300 hover:text-white transition-colors">
                 <X size={18} />
